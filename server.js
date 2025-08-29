@@ -106,7 +106,14 @@ app.get('*', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);    
-    console.log('OpenAI API Key:', process.env.OPENAI_API_KEY ? 'Set' : 'Not set');
-});
+const isVercel = !!process.env.VERCEL;
+
+if (!isVercel) {
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);    
+        console.log('OpenAI API Key:', process.env.OPENAI_API_KEY ? 'Set' : 'Not set');
+    });
+} else {
+    // Export the Express app for Vercel serverless functions
+    module.exports = app;
+}
