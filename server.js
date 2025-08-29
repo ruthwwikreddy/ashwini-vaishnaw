@@ -17,8 +17,7 @@ app.use(cors({
 
 app.use(express.json());
 
-// Serve static files from the current directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Note: Single-page app served via catch-all below
 
 // Log all requests
 app.use((req, res, next) => {
@@ -36,10 +35,10 @@ app.post('/api/chat', async (req, res) => {
         }
 
         // Build system prompt based on style
-        let systemContent = `You are Ashwini Vaishnaw, Union Minister in the Government of India. `;
-        systemContent += `You are a senior administrator and policymaker focusing on technology, infrastructure, and governance. `;
-        systemContent += `You emphasize efficiency, citizen-centric services, and digital transformation. `;
-        systemContent += `Maintain a balanced, constructive tone aligned with ministerial responsibility.\n\n`;
+        let systemContent = `You are R.K. Chaudhary, Member of Parliament from Mohanlalganj, Uttar Pradesh, India. `;
+        systemContent += `You are a senior Dalit leader and advocate for social justice. `;
+        systemContent += `You are currently a member of the Samajwadi Party and were previously with the BSP. `;
+        systemContent += `You are a strong advocate for federalism and states' rights, with a focus on issues affecting marginalized communities.\n\n`;
         
         if (style === 'concise') {
             systemContent += `Please provide a brief and to-the-point response (1-2 paragraphs). `;
@@ -48,13 +47,8 @@ app.post('/api/chat', async (req, res) => {
         }
         
         systemContent += `Always respond in English. `;
-        // Agenda focus
-        systemContent += `Agenda: Discuss Article 19(1)(a) of the Indian Constitution (freedom of speech and expression) and the effect of the Unlawful Activities (Prevention) Act (UAPA) on this freedom. `;
-        systemContent += `Explain the scope of Article 19(1)(a), the permissible restrictions under Article 19(2), and how UAPA provisions interact with these constitutional limits. `;
-        systemContent += `Where helpful, reference leading principles and case law (e.g., Shreya Singhal v. Union of India (2015) on advocacy vs. incitement, Kedar Nath Singh (1962) on sedition interpretation, Modern Dental College (2016)/Puttaswamy (2017) proportionality test, and UAPA bail jurisprudence such as Watali (2019) and K.A. Najeeb (2021)). `;
-        systemContent += `Maintain balance: acknowledge national security objectives while evaluating chilling effects, overbreadth, vagueness, bail thresholds, and proportionality. `;
-        systemContent += `Provide clear, neutral, and policy-focused explanations suited to a public discussion; avoid giving personalized legal advice. `;
-        systemContent += `Be firm in your positions but maintain ministerial decorum.`;
+        systemContent += `Focus on issues of social justice, federalism, and the concerns of marginalized communities. `;
+        systemContent += `Be firm in your positions but maintain parliamentary decorum.`;
         
         console.log('Sending request to OpenAI with style:', style);
         
@@ -106,14 +100,7 @@ app.get('*', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
-const isVercel = !!process.env.VERCEL;
-
-if (!isVercel) {
-    app.listen(PORT, () => {
-        console.log(`Server running on http://localhost:${PORT}`);    
-        console.log('OpenAI API Key:', process.env.OPENAI_API_KEY ? 'Set' : 'Not set');
-    });
-} else {
-    // Export the Express app for Vercel serverless functions
-    module.exports = app;
-}
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);    
+    console.log('OpenAI API Key:', process.env.OPENAI_API_KEY ? 'Set' : 'Not set');
+});

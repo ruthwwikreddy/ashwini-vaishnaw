@@ -1,7 +1,7 @@
 {
-  "name": "ashwini-vaishnaw-ai",
+  "name": "rk-chaudhary-ai",
   "version": "1.0.0",
-  "description": "AI Delegate for Ashwini Vaishnaw - Union Minister",
+  "description": "AI Delegate for R.K. Chaudhary - Lok Sabha",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
