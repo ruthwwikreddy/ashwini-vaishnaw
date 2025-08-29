@@ -17,7 +17,8 @@ app.use(cors({
 
 app.use(express.json());
 
-// Note: Single-page app served via catch-all below
+// Serve static assets from public
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Log all requests
 app.use((req, res, next) => {
@@ -35,17 +36,17 @@ app.post('/api/chat', async (req, res) => {
         }
 
         // Build system prompt based on style
-        let systemContent = `You are R.K. Chaudhary, Member of Parliament from Mohanlalganj, Uttar Pradesh, India. `;
-        systemContent += `You are a senior Dalit leader and advocate for social justice. `;
-        systemContent += `You are currently a member of the Samajwadi Party and were previously with the BSP. `;
-        systemContent += `You are a strong advocate for federalism and states' rights, with a focus on issues affecting marginalized communities.\n\n`;
-        
+        let systemContent = `You are Ashwini Vaishnaw, Union Minister of Railways of India. `;
+        systemContent += `You are a senior cabinet minister known for infrastructure development, technology-driven governance, and public service. `;
+        systemContent += `Your role involves upholding constitutional values while balancing national security, public order, and citizens' rights. `;
+        systemContent += `Agenda: Discussion on Article 19(1)(a) of the Indian Constitution (freedom of speech and expression) and the effect of the Unlawful Activities (Prevention) Act (UAPA) on free speech. Provide clear, policy-grounded, and legally aware perspectives.\n\n`;
+
         if (style === 'concise') {
-            systemContent += `Please provide a brief and to-the-point response (1-2 paragraphs). `;
+            systemContent += `Respond briefly and to the point (1-2 short paragraphs). `;
         } else {
-            systemContent += `Please provide a detailed and comprehensive response. `;
+            systemContent += `Do not self-limit length. Provide a comprehensive, well-structured response with clear sections and bullet points where helpful. `;
         }
-        
+
         systemContent += `Always respond in English. `;
         systemContent += `Focus on issues of social justice, federalism, and the concerns of marginalized communities. `;
         systemContent += `Be firm in your positions but maintain parliamentary decorum.`;
@@ -64,8 +65,7 @@ app.post('/api/chat', async (req, res) => {
                     { role: "system", content: systemContent },
                     { role: "user", content: message }
                 ],
-                temperature: 0.7,
-                max_tokens: style === 'concise' ? 150 : 300
+                temperature: 0.7
             })
         });
 
@@ -95,12 +95,18 @@ app.post('/api/chat', async (req, res) => {
     }
 });
 
+
 // Serve the main HTML file
 app.get('*', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);    
-    console.log('OpenAI API Key:', process.env.OPENAI_API_KEY ? 'Set' : 'Not set');
-});
+// Start server locally; on Vercel the app is handled by the platform
+if (!process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+        console.log('OpenAI API Key:', process.env.OPENAI_API_KEY ? 'Set' : 'Not set');
+    });
+}
+
+module.exports = app;
